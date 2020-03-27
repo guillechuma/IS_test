@@ -8,6 +8,7 @@ Output: file parsed as tab delimited
 import os
 import pandas as pd
 from io import StringIO
+import numpy as np
 
 def run_isescan(genome_file):
 	
@@ -42,12 +43,36 @@ def parse_isescan(gff_file):
 									'start', 'end','score', 'strand', 'frame', 'attribute'],
 							skiprows = [0]
 							)
+							
+	#Filter the datafram to just is_sequence position
 	is_seq_arr = gff_arr[gff_arr['type'] == 'insertion_sequence']
-	gff_arr['attribute'].str.replace('.*','IS_\d*')
-	print(gff_arr['attribute'])
+	
+	# Create a new column with the corresponding id in format IS_1, IS_2 ....
+	gff_arr['id'] = gff_arr['attribute'].str.extract('(IS_\d+)')
+	
+	#Create new column with corresponding family in format ISX, ISY ....
+	gff_arr['family'] = gff_arr['attribute'].str.split(';', expand = True)[1]
+	gff_arr['family'] = gff_arr['family'].str.extract('(IS\d+)')
+	#gff_arr.loc[:,'family'][gff_arr['family'] == 'IS'] = np.nan
+	
+	#Create new column with corresponding cluster in format ISX, ISY ....
+	gff_arr['cluster'] = gff_arr['attribute'].str.split(';', expand = True)[2]
+	gff_arr['cluster'] = gff_arr['cluster'].str.extract('(IS\d+_\d+)')
+	#gff_arr.loc[:,'cluster'][gff_arr['cluster'] == 'IS'] = np.nan
+	
+	#Create the dataframe with the wanted order
+	gff = gff_arr[['id','family','cluster','type','start','end','strand']]
+	
+	return gff
+	
+def write_as_csv(gff_df, genome_name =''):
+	'''This function takes a dataframe and outputs a csv_file'''
+	gff_df.to_csv('./results/' + genome_name + '.csv')
+	
 
 if __name__ == '__main__':
 	#run_isescan('PAO1.fna')
 	#remove_files_isescan()
-	parse_isescan('./prediction/PAO1.fna.gff')
+	PAO1 = parse_isescan('./prediction/PAO1.fna.gff')
+	write_as_csv(PAO1, 'PAO1')
 	
