@@ -40,10 +40,6 @@ def parse_genome(gff_file, only_genes = True):
 	#TODO:Parse protein function
 	
 	#TODO:Extract the corresponding protein attribute from the gene it belongs
-	'''
-	cds_arr = gff_arr[gff_arr['type'] == 'CDS']
-	cds_attribute_arr = cds_arr['attribute'].str.split(';', expand = True)
-	'''
 	
 	#Parse locus tag
 	gff_arr['locus_tag'] = attribute_arr.str.extract('locus_tag=(.*)')
@@ -60,5 +56,5 @@ def write_as_csv(gff_df, genome_name =''):
 	gff_df.to_csv('./results/' + genome_name + '_genome.csv')
 
 if __name__ == '__main__':
-	PAO1 = parse_genome('./genomes/PAO1_genome.gff')
-	write_as_csv(PAO1, 'PAO1')
+	NCGM2 = parse_genome('./genomes/NCGM2.S1.gff')
+	write_as_csv(NCGM2, 'NCGM2.S1')

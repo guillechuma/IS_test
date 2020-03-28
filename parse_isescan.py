@@ -16,10 +16,11 @@ def run_isescan(genome_file):
 	os.system(ssw_command)
 	
 	# Run the isescan program
-	isescan_command = 'python ./ISEScan-master/isescan.py ' + str(genome_file) + ' proteome hmm'
+	isescan_command = 'python ./ISEScan-master/isescan.py ' + str(genome_file) + ' ./ISEScan-master/proteome ./ISEScan-master/hmm'
 	os.system(isescan_command)
 	
 def remove_files_isescan():
+	#DO NOT USE
 	# This function deletes all output files from isescan that are not usefull,
 	# only the gff file remains
 	delete_command = 'find . -type f ! -name "*.gff" -delete'
@@ -74,8 +75,8 @@ def write_as_csv(gff_df, genome_name =''):
 	
 
 if __name__ == '__main__':
-	#run_isescan('PAO1.fna')
+	#run_isescan('NCGM2.S1.fna')
 	#remove_files_isescan()
-	PAO1 = parse_isescan('./prediction/PAO1.fna.gff')
-	write_as_csv(PAO1, 'PAO1')
+	NCGM2 = parse_isescan('./prediction/NCGM2.S1.fna.gff')
+	write_as_csv(NCGM2, 'NCGM2.S1')
 	

@@ -40,10 +40,10 @@ def find_is_genes(genome_name):
 	merged_df = pd.merge(genome_df, intersected_df, on='id')
 	print('There are ' + str(len(merged_df)) + ' IS sequences interrupting genes in ' + genome_name)
 	print('The genes are:')
-	print(merged_df['gene_name'])
+	print(merged_df[['product','gene_name']])
 	
 	
 	
 if __name__ == '__main__':
-	find_is_genes('PAO1')
+	find_is_genes('NCGM2.S1')
 	
