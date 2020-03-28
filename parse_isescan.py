@@ -2,12 +2,11 @@
 This program runs the program isescan with a genome as input 
 and parses de most important fields in the resulting gff file.
 Input: genome in fasta format
-Output: file parsed as tab delimited
+Output: file parsed as csv
 
 '''
 import os
 import pandas as pd
-from io import StringIO
 import numpy as np
 
 def run_isescan(genome_file):
@@ -60,14 +59,18 @@ def parse_isescan(gff_file):
 	gff_arr['cluster'] = gff_arr['cluster'].str.extract('(IS\d+_\d+)')
 	#gff_arr.loc[:,'cluster'][gff_arr['cluster'] == 'IS'] = np.nan
 	
+	#Add an interval column to later merge dataframes
+	gff_arr['interval'] = [pd.Interval(start, end, closed='both') for (start, end) in zip(gff_arr['start'], gff_arr['end'])]
+	
 	#Create the dataframe with the wanted order
-	gff = gff_arr[['id','family','cluster','type','start','end','strand']]
+	gff = gff_arr[['id','family','cluster','type','start','end','strand', 'interval']]
+	
 	
 	return gff
 	
 def write_as_csv(gff_df, genome_name =''):
 	'''This function takes a dataframe and outputs a csv_file'''
-	gff_df.to_csv('./results/' + genome_name + '.csv')
+	gff_df.to_csv('./results/' + genome_name + '_is.csv')
 	
 
 if __name__ == '__main__':
